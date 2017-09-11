@@ -10,12 +10,11 @@ selFaces = []
 for areas in bpy.context.screen.areas:
     if areas.type == "VIEW_3D":
         break
-
-bpy.context.object.modifiers["Subsurf"].show_viewport = False
+        
 
 #Apply bevel and remove seams
-bpy.ops.object.mode_set(mode="OBJECT")
-bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Bevel")
+#bpy.ops.object.mode_set(mode="OBJECT")
+#bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Bevel")
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action='SELECT')
 bpy.ops.mesh.mark_seam(clear=True)
@@ -29,19 +28,19 @@ for f in me.polygons:
 #loop through polygons and perform operation    
 for s in selFaces:
     bpy.ops.object.mode_set(mode="OBJECT")
-    selFaces[0].select = True
+    s.select = True
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_linked(delimit={'UV'})
     
     #Remove UV island from list of polygons
-    for f in selFaces:
-        if f.select:
-            selFaces.remove(f)
+    #for f in selFaces:
+    #    if f.select:
+    #        selFaces.remove(f)
             
     bpy.ops.mesh.region_to_loop()
     bpy.ops.mesh.mark_seam()
-bpy.ops.object.mode_set(mode="EDIT")
-bpy.ops.mesh.select_all(action='SELECT')
-bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.035)
-bpy.ops.mesh.select_all(action='DESELECT')
-bpy.context.object.modifiers["Subsurf"].show_viewport = True
+    bpy.ops.mesh.select_all(action='DESELECT')
+#bpy.ops.object.mode_set(mode="EDIT")
+#bpy.ops.mesh.select_all(action='SELECT')
+#bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.035)
+#bpy.ops.mesh.select_all(action='DESELECT')
