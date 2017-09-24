@@ -30,9 +30,12 @@ for obj in bpy.context.selected_objects:
     for mod in [m for m in obj.modifiers if m.type == 'SUBSURF']:
         obj.modifiers[mod.name].show_viewport = True
         bpy.context.object.modifiers[mod.name].levels = subd_level
+        bpy.context.object.modifiers[mod.name].render_levels = subd_level
+
         subd_flag = True
 
     if subd_flag == False:
         bpy.ops.object.modifier_add(type='SUBSURF')
         bpy.context.object.modifiers['Subsurf'].levels = subd_level
+        bpy.context.object.modifiers['Subsurf'].render_levels = subd_level
         bpy.context.object.modifiers['Subsurf'].show_only_control_edges = True
