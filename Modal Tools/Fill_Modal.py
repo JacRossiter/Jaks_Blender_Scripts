@@ -4,12 +4,12 @@ import bgl
 bl_info = {
     "name": "Fill-Modal",
     "category": "User",
-    "author": "Andreas Strømberg",
+    "author": "Andreas Strømberg, Jac Rossiter",
 }
 
 
 def draw_callback_px(self, context):
-    bpy.context.scene.retopo_wire.useRetopoWire = True
+    bpy.context.scene.retopo_wire.useRetopoWire = True #Uses Draw Xray Addon to Render vertices while in edge mode
     # 50% alpha, 2 pixel width line
     bgl.glEnable(bgl.GL_BLEND)
     bgl.glColor4f(1.0, 1.0, 1.0, 1.0)
@@ -41,7 +41,7 @@ def main(context, event, started):
         bpy.ops.mesh.select_all(action='DESELECT')
 
 
-#Connect modal
+# Fill Modal
 class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
     """Modal object selection with a ray cast"""
     bl_idname = "object.smart_fill_tool_raycast"
@@ -56,7 +56,8 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
 
     def modal(self, context, event):
         context.area.tag_redraw()
-
+        
+        #Viewport Navigation
         if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
             return {'PASS_THROUGH'}
         
@@ -66,13 +67,14 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
 
         elif event.type == 'LEFTMOUSE':
             main(context, event, self.started)
+            
             if not self.started:
-                if context.object.data.total_vert_sel == 2:
+                if context.object.data.total_vert_sel == 2: # Single Edge
                     self.start_vertex = (event.mouse_region_x, event.mouse_region_y)
                     self.end_vertex = (event.mouse_region_x, event.mouse_region_y)
                     self.started = True
             
-            elif context.object.data.total_vert_sel == 3:
+            elif context.object.data.total_vert_sel == 3: # Triangles
                 if event.shift:
                     bpy.ops.mesh.subdivide(smoothness=0)
                 elif event.ctrl:
@@ -85,28 +87,29 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
                 bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
                 self.started = False
                 
-            elif context.object.data.total_vert_sel == 4:
+            elif context.object.data.total_vert_sel == 4: # Quads
                 if event.shift:
                     bpy.ops.mesh.loop_multi_select(ring=True)
                     bpy.ops.mesh.subdivide(smoothness=0)
-                    self.started = False
                 elif event.ctrl:
                     bpy.ops.mesh.subdivide(smoothness=0)
-                    self.started = False
                 else:
-                    bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
-                bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
+                    try:
+                        bpy.ops.mesh.vert_connect_path()
+                    except RuntimeError:
+                        bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
+                    bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
                 self.started = False
             
             return {'RUNNING_MODAL'}
         
-        elif event.type == 'SPACE':
+        elif event.type == 'SPACE': # Reset Line
             self.started = False
         
-        elif event.ctrl and event.type == 'Z' and event.value == 'PRESS':
+        elif event.ctrl and event.type == 'Z' and event.value == 'PRESS': # Undo
             bpy.ops.ed.undo()    
             
-        elif event.type in {'RIGHTMOUSE', 'ESC'}:
+        elif event.type in {'RIGHTMOUSE', 'ESC'}: # Escape Modal
             context.area.header_text_set()
             bpy.types.SpaceView3D.draw_handler_remove(self._handle, 'WINDOW')
             bpy.context.scene.retopo_wire.useRetopoWire = False
@@ -123,7 +126,7 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
             
             context.window_manager.modal_handler_add(self)
             self._handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, args, 'WINDOW', 'POST_PIXEL')
-            context.area.header_text_set("Click+Drag: Fill, Shift+Click+Drag: Loop Cut, Ctrl+Click+Drag: Subdivide, Space: Restart Auto Connect, Ctrl+Z: Undo, RMB/ESC: Exit") 
+            context.area.header_text_set("Click+Drag: Fill/Connect, Shift+Click+Drag: Loop Cut, Ctrl+Click+Drag: Subdivide, Space: Restart Auto Connect, Ctrl+Z: Undo, RMB/ESC: Exit") 
             self.started = False
             return {'RUNNING_MODAL'}
         else:
