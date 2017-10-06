@@ -98,7 +98,7 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
                         bpy.ops.mesh.vert_connect_path()
                     except RuntimeError:
                         bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
-                    bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
+                bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
                 self.started = False
             
             return {'RUNNING_MODAL'}
