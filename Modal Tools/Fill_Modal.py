@@ -81,9 +81,9 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
                     try:
                         bpy.ops.mesh.vert_connect_path()
                     except RuntimeError:
-                        bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
-                    bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
-                    self.started = False
+                        bpy.ops.mesh.f2('INVOKE_DEFAULT')
+                bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
+                self.started = False
                 
             elif context.object.data.total_vert_sel == 4:
                 if event.shift:
@@ -94,12 +94,9 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
                     bpy.ops.mesh.subdivide(smoothness=0)
                     self.started = False
                 else:
-                    try:
-                        bpy.ops.mesh.vert_connect_path()
-                    except RuntimeError:
-                        bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
-                    bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
-                    self.started = False
+                    bpy.ops.mesh.smart_fill('INVOKE_DEFAULT')
+                bpy.ops.ed.undo_push(message="Add an undo step *function may be moved*")
+                self.started = False
             
             return {'RUNNING_MODAL'}
         
