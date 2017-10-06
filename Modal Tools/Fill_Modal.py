@@ -103,7 +103,7 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
             
             return {'RUNNING_MODAL'}
         
-        elif event.type == 'SPACE': # Reset Line
+        elif event.type == 'SPACE': # Reset Ray Cast
             self.started = False
         
         elif event.ctrl and event.type == 'Z' and event.value == 'PRESS': # Undo
