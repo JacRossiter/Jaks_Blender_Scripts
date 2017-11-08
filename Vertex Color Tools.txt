@@ -1,5 +1,0 @@
-import bpy
-
-for ob in bpy.context.selected_objects:
-    while len(ob.data.vertex_colors) != 0:
-    bpy.ops.mesh.vertex_color_remove()
