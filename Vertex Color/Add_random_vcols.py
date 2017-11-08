@@ -11,7 +11,7 @@ selected_meshes = bpy.context.selected_objects
 for mesh in selected_meshes:
     mat = bpy.data.materials.new('VertexMat')
     mat.use_vertex_color_paint = True
-    mat.use_vertex_color_light = Trueg
+    mat.use_vertex_color_light = True
     mesh.data.materials.append(mat)
     
     # Tell Blender to Update the Material
