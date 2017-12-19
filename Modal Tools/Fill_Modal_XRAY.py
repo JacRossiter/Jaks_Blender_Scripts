@@ -1,6 +1,8 @@
 import bpy
 import bgl
 
+# ONLY USE THIS VERSION IF YOU HAVE DRAW XRAY ADDON ENABLED
+
 bl_info = {
     "name": "Fill-Modal",
     "category": "User",
@@ -9,6 +11,7 @@ bl_info = {
 
 
 def draw_callback_px(self, context):
+    bpy.context.scene.retopo_wire.useRetopoWire = True #Uses Draw Xray Addon to Render vertices while in edge mode
     # 50% alpha, 2 pixel width line
     bgl.glEnable(bgl.GL_BLEND)
     bgl.glColor4f(1.0, 1.0, 1.0, 1.0)
@@ -111,6 +114,7 @@ class RMB_Smart_Fill_Tool_Raycast(bpy.types.Operator):
         elif event.type in {'RIGHTMOUSE', 'ESC'}: # Escape Modal
             context.area.header_text_set()
             bpy.types.SpaceView3D.draw_handler_remove(self._handle, 'WINDOW')
+            bpy.context.scene.retopo_wire.useRetopoWire = False
             return {'CANCELLED'}
 
         return {'RUNNING_MODAL'}
