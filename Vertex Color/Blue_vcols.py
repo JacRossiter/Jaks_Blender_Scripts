@@ -24,9 +24,9 @@ def replace_vcols_object():
     
     # Iterate over every mesh vertex color and give it a single colour
     
-        colR = random.random()
-        colG = random.random()
-        colB = random.random()
+        colR = 0
+        colG = 0
+        colB = 1
 
         #bpy.data.brushes["Draw"].cursor_color_add = (1, 0, 0)
 
@@ -76,9 +76,9 @@ def replace_vcols_edit():
 
     # Iterate over every mesh vertex color and give it a single colour
 
-        colR = random.random()
-        colG = random.random()
-        colB = random.random()
+        colR = 0
+        colG = 0
+        colB = 1
 
         for i in range(totalVertCol):
             ob.data.vertex_colors[0].data[i].color = colR, colG, colB
@@ -93,10 +93,10 @@ def replace_vcols_edit():
 
 
 # Object Mode
-if context.active_object.mode == 'OBJECT':
+if bpy.context.active_object.mode == 'OBJECT':
     replace_vcols_object()
 
 # Edit Mode
-if context.active_object.mode == 'EDIT':
+if bpy.context.active_object.mode == 'EDIT':
     replace_vcols_edit()
     

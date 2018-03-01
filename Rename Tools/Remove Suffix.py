@@ -2,13 +2,16 @@ import bpy
 
 #Delete '_high' or '_low' Suffix
 
-newName = (bpy.context.scene.objects.active.name)
+for obj in bpy.context.selected_objects:
+    bpy.context.scene.objects.active = obj
 
-o = newName[-5:]
+    newName = (bpy.context.scene.objects.active.name)
 
-if "_high" in o:    
-    newName = newName[:-5]
-else:
-    newName = newName[:-4]
-    
-bpy.context.scene.objects.active.name = newName
+    o = newName[-5:]
+
+    if "_high" in o:    
+        newName = newName[:-5]
+    else:
+        newName = newName[:-4]
+        
+    bpy.context.scene.objects.active.name = newName
