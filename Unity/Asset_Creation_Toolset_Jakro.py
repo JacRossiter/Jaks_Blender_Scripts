@@ -104,7 +104,7 @@ class Multi_FBX_export(bpy.types.Operator):
 			else:
 			#Individual Export
 				current_pivot_point = bpy.context.space_data.pivot_point
-				bpy.context.space_data.pivot_point = 'MEDIAN_POINT'
+				bpy.context.space_data.pivot_point = 'CURSOR'
 				for x in current_selected_obj:
 					# Select only current object
 					bpy.ops.object.select_all(action='DESELECT')
@@ -136,7 +136,7 @@ class Multi_FBX_export(bpy.types.Operator):
 						bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
 						bpy.context.scene.cursor_location = object_loc
 						bpy.ops.view3d.snap_selected_to_cursor(use_offset=True)
-						bpy.ops.view3d.snap_cursor_to_center()
+						bpy.ops.view3d.snap_cursor_to_selected()
 
 						bpy.ops.object.mode_set(mode='EDIT')
 						bpy.ops.mesh.select_all(action='SELECT')
