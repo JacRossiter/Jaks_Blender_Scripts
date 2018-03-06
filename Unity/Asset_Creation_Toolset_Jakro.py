@@ -39,78 +39,72 @@ class Multi_FBX_export(bpy.types.Operator):
 			name = bpy.context.active_object.name
 			bpy.context.scene.unit_settings.system = 'METRIC'
 			bpy.context.scene.unit_settings.scale_length = 0.01
+			active_ob = context.active_object
+			current_pivot_point = bpy.context.space_data.pivot_point
 
 			#Export as one fbx
-			if context.scene.export_one_fbx == True:
-				current_pivot_point = bpy.context.space_data.pivot_point
-				bpy.ops.view3d.snap_cursor_to_center()
-				bpy.context.space_data.pivot_point = 'CURSOR'
-				for x in current_selected_obj:
-					# Select only current object
-					bpy.ops.object.select_all(action='DESELECT')
-					if x.type == 'MESH':
-						x.select = True
-						bpy.context.scene.objects.active = x
-						# X-rotation fix
-						bpy.context.space_data.pivot_point = 'CURSOR'
-						bpy.ops.object.mode_set(mode='EDIT')
-						bpy.ops.mesh.select_all(action='SELECT')
-						bpy.ops.transform.rotate(value = -1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')
-						bpy.ops.object.mode_set(mode='OBJECT')
-						bpy.ops.transform.rotate(value = 1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')   
+			if context.scene.export_one_fbx == True and len(bpy.context.selected_objects) > 1:
 
-				# Scale Fix
-				bpy.ops.object.select_all(action='DESELECT')
+				print('EXPORTING AS ONE')
+				##### EXPORT SINGLE ASSET #####
+
+				# Set Transform Pivot
+				bpy.ops.view3d.snap_cursor_to_active()
 				bpy.context.space_data.pivot_point = 'CURSOR'
-				for x in current_selected_obj:
-					if x.type == 'MESH':
-						x.select = True
-						bpy.context.scene.objects.active = x
+
+
+				# Edit Transforms for Unity
+				for ob in current_selected_obj:
+					if ob.type == 'MESH':
+						bpy.context.scene.objects.active = ob
+
+						# X-rotation fix
 						bpy.ops.object.mode_set(mode='EDIT')
 						bpy.ops.mesh.select_all(action='SELECT')
 						bpy.ops.transform.resize(value=(100, 100, 100))
+						#bpy.ops.transform.rotate(value = -1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')
 						bpy.ops.object.mode_set(mode='OBJECT')
-				
+						#bpy.ops.transform.rotate(value = 1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')
+
 				#Create export folder
-				path = bpy.path.abspath('//FBXs/')
+				path = bpy.path.abspath('//Meshes/')
 				if not os.path.exists(path):
 					os.makedirs(path)
-				#deselect all and select only meshes
-				bpy.ops.object.select_all(action='DESELECT')
-				for x in current_selected_obj:
-					if x.type == 'MESH':
-						x.select = True
-						bpy.context.scene.objects.active = x
-				
-				
-				#Export as one FBX
+
+				# Revert Active Object
+				bpy.context.scene.objects.active = active_ob
+
+				# Export as One FBX
 				bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
-				#Apply rotation and scale
-				for x in current_selected_obj:
-					if x.type == 'MESH':
-						x.select = True
-						bpy.context.scene.objects.active = x
-						bpy.context.space_data.pivot_point = 'CURSOR'
+
+				# Revert Transforms
+				for ob in current_selected_obj:
+					if ob.type == 'MESH':
+						bpy.context.scene.objects.active = ob
+						
+						# Revert Transforms
 						bpy.ops.object.mode_set(mode='EDIT')
 						bpy.ops.mesh.select_all(action='SELECT')
 						bpy.ops.transform.resize(value=(0.01, 0.01, 0.01))
-						bpy.ops.transform.rotate(value = 1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL') 
-						#bpy.context.space_data.pivot_point = current_pivot_point
+						#bpy.ops.transform.rotate(value = 1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')
 						bpy.ops.object.mode_set(mode='OBJECT')
-						bpy.context.object.rotation_euler[0] = 0
-						#bpy.ops.transform.rotate(value = -1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL') 
-						#bpy.context.space_data.pivot_point = current_pivot_point
+						#bpy.ops.transform.rotate(value = -1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')
+
+						
+				# Revert Active Object
+				bpy.context.scene.objects.active = active_ob
+
 
 			else:
 			#Individual Export
 				current_pivot_point = bpy.context.space_data.pivot_point
 				bpy.context.space_data.pivot_point = 'CURSOR'
-				for x in current_selected_obj:
+				for ob in current_selected_obj:
 					# Select only current object
 					bpy.ops.object.select_all(action='DESELECT')
-					if x.type == 'MESH':
-						x.select = True
-						bpy.context.scene.objects.active = x
+					if ob.type == 'MESH':
+						ob.select = True
+						bpy.context.scene.objects.active = ob
 						bpy.ops.view3d.snap_cursor_to_selected()
 						object_loc = bpy.context.scene.cursor_location.copy()
 						bpy.ops.view3d.snap_cursor_to_center()
@@ -124,10 +118,10 @@ class Multi_FBX_export(bpy.types.Operator):
 						bpy.ops.transform.rotate(value = 1.5708, axis = (1, 0, 0), constraint_axis = (True, False, False), constraint_orientation = 'GLOBAL')   
 
 						# FBX Export
-						path = bpy.path.abspath('//FBXs/')
+						path = bpy.path.abspath('//Meshes/')
 						if not os.path.exists(path):
 							os.makedirs(path)
-						name = x.name
+						name = ob.name
 						bpy.ops.object.mode_set(mode='EDIT')
 						bpy.ops.mesh.select_all(action='SELECT')
 						bpy.ops.transform.resize(value=(100, 100, 100))
@@ -145,7 +139,7 @@ class Multi_FBX_export(bpy.types.Operator):
 						bpy.ops.object.mode_set(mode='OBJECT')
 						bpy.context.object.rotation_euler[0] = 0
 					#Development Function
-					'''
+				'''
 					if context.scene.fbx_save_rotation == False:
 						# Select only current object
 						bpy.ops.object.select_all(action='DESELECT')
