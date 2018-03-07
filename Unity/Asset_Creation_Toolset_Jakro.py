@@ -73,7 +73,7 @@ class Multi_FBX_export(bpy.types.Operator):
 				bpy.context.scene.objects.active = active_ob
 
 				# Export as One FBX
-				bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
+				bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True, use_mesh_modifiers=True)
 
 				# Revert Transforms
 				for ob in current_selected_obj:
@@ -89,6 +89,8 @@ class Multi_FBX_export(bpy.types.Operator):
 						
 				# Revert Active Object
 				bpy.context.scene.objects.active = active_ob
+				bpy.context.space_data.pivot_point = 'MEDIAN_POINT'
+
 
 
 			else:
@@ -122,7 +124,7 @@ class Multi_FBX_export(bpy.types.Operator):
 							os.makedirs(path)
 						name = ob.name
 						
-						bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
+						bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True, use_mesh_modifiers=True)
 						bpy.context.scene.cursor_location = object_loc
 						bpy.ops.view3d.snap_selected_to_cursor(use_offset=True)
 						bpy.ops.view3d.snap_cursor_to_selected()
@@ -132,6 +134,7 @@ class Multi_FBX_export(bpy.types.Operator):
 						bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='ENABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
 						bpy.ops.object.mode_set(mode='OBJECT')
 						bpy.context.object.rotation_euler[0] = 0
+						bpy.context.space_data.pivot_point = 'MEDIAN_POINT'
 
 
 
