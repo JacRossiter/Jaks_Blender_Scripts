@@ -73,7 +73,7 @@ class Multi_FBX_export(bpy.types.Operator):
 				bpy.context.scene.objects.active = active_ob
 
 				# Export as One FBX
-				bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True, use_mesh_modifiers=True)
+				bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
 
 				# Revert Transforms
 				for ob in current_selected_obj:
@@ -124,7 +124,7 @@ class Multi_FBX_export(bpy.types.Operator):
 							os.makedirs(path)
 						name = ob.name
 						
-						bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True, use_mesh_modifiers=True)
+						bpy.ops.export_scene.fbx(filepath=str(path + name + '.fbx'), version='BIN7400', ui_tab='MAIN', use_selection=True, global_scale=1, apply_unit_scale=True)
 						bpy.context.scene.cursor_location = object_loc
 						bpy.ops.view3d.snap_selected_to_cursor(use_offset=True)
 						bpy.ops.view3d.snap_cursor_to_selected()
