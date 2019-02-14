@@ -1,5 +1,7 @@
 import bpy
 
+bpy.context.space_data.viewport_shade = 'TEXTURED'
+
 for ob in bpy.context.selected_objects:
     bpy.context.scene.objects.active = ob
     
@@ -16,7 +18,6 @@ for ob in bpy.context.selected_objects:
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_all(action='SELECT')
         bpy.context.object.draw_type = 'TEXTURED'
-        bpy.context.space_data.viewport_shade = 'TEXTURED'
         bpy.ops.image.new( name='UV Grid', generated_type = 'UV_GRID' )
         bpy.data.screens['UV Editing'].areas[1].spaces[0].image = bpy.data.images['UV Grid']
         bpy.data.images["UV Grid"].source = 'GENERATED'

@@ -6,3 +6,4 @@ for ob in bpy.context.selected_objects:
         mesh = bpy.context.active_object.data
         if len(mesh.uv_textures.items()) >= 1:
                 mesh.uv_textures.active_index = 0
+bpy.ops.hops.draw_uv()
