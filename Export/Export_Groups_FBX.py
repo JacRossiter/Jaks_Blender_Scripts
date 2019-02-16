@@ -1,5 +1,8 @@
 import bpy
 
+#This addon exports groups as a single fbx to a folder called meshes
+
+
 bpy.ops.object.hide_view_clear()
 
 path = bpy.path.abspath('//Meshes/')
