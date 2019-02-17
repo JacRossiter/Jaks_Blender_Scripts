@@ -4,7 +4,7 @@ import bpy
 
 print("---------------------------------------------------------")
 
-# Detects mesh with '_low' suffix, sets that object as active
+# Detects Object with '_low' suffix, sets that object as active
 
 for obj in bpy.context.selected_objects:
     if "_low" in obj.name[-4:]:
